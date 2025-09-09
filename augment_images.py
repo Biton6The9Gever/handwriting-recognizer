@@ -1,23 +1,38 @@
-from PIL import Image, ImageOps
+import cv2
+import os
 
-# path for the images not including the index and extension
-IMAGE_ROOT = "../ML_Project/Dataset/SentencePictures/Sentence_"
-SENTENCE_AMOUNT=48
+class ImageAugmenter:
+    def __init__(self, image_root, sentence_amount):
+        self.image_root = image_root
+        self.sentence_amount = sentence_amount
+    
+    def inverse_colors(self, image_path, i):
+        """Invert the colors of the given image."""
+        if image_path is None or not os.path.exists(image_path):
+            return
+        image = cv2.imread(image_path)
+        inverted_image = cv2.bitwise_not(image)
+        cv2.imwrite(self.image_root + "{:03d}.jpg".format(i+self.sentence_amount), inverted_image)
+    
+    def gauss_blur(self, image_path, i):
+        """Apply Gaussian blur to the given image."""
+        if image_path is None or not os.path.exists(image_path):
+            return
+        image = cv2.imread(image_path)
+        blurred_image = cv2.GaussianBlur(image, (5, 5), 0)
+        cv2.imwrite(self.image_root + "{:03d}.jpg".format(i+self.sentence_amount*2), blurred_image)
+    
+    def process_images(self):
+        for i in range(1, self.sentence_amount + 1):
+            image_path = self.image_root + "{:03d}.jpg".format(i)
+            self.inverse_colors(image_path, i)
 
-def inverse_colors(image_path,i):
-    """Invert the colors of the given image."""
-    if(image_path==None):
-        return
-    image=Image.open(image_path)
-    image=ImageOps.invert(image)
-    image.save(IMAGE_ROOT+"{:03d}.jpg".format(i+SENTENCE_AMOUNT))
 
 
-
-for i in range(1,SENTENCE_AMOUNT+1):
-    image_path=IMAGE_ROOT+"{:03d}.jpg".format(i)
-    inverse_colors(image_path,i)
-
-
-
-
+if __name__ == "__main__":
+    # path for the images not including the index and extension
+    IMAGE_ROOT = "../ML_Project/Dataset/SentencePictures/Sentence_"
+    SENTENCE_AMOUNT=48
+    
+    augmenter = ImageAugmenter(IMAGE_ROOT, SENTENCE_AMOUNT)
+    augmenter.process_images()
