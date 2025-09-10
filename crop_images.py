@@ -4,7 +4,7 @@ import os
 IMAGE_ROOT="../ML_Project/Dataset/Letters/"
 def crop_image_cv2(image_path, output_path, left, upper, right, lower):
     """
-    Crops an image using OpenCV.
+    crop an image given the cropping cords.
 
     Args:
         image_path (str): Path to the input image.
@@ -27,12 +27,11 @@ def crop_image_cv2(image_path, output_path, left, upper, right, lower):
         print(f"An error occurred: {e}")
 
 
-for i in range(1):  # TODO replace 1 with 26 for all letters
+for i in range(2):  # TODO replace 2 with 26 for all letters
     try:
         letter = chr(ord('A') + i)
-
-        # crop the border
-        crop_image_cv2(f"{IMAGE_ROOT}None_Croped/None_Croped_{letter}.jpg", "border_less_image.jpg", 14, 14, 1014, 1344)
+        # crop the border 
+        crop_image_cv2(f"{IMAGE_ROOT}None_Cropped/None_Cropped_{letter}.jpg", "border_less_image.jpg", 33, 33, 1033, 1363)
 
         # load the cropped image to get its dimensions
         img = cv2.imread("border_less_image.jpg")
@@ -45,6 +44,7 @@ for i in range(1):  # TODO replace 1 with 26 for all letters
         # top half -> Capital
         crop_image_cv2("border_less_image.jpg", f"{IMAGE_ROOT}Capital/Capital_{letter}.jpg", 0, 0, width, half_height)
         # bottom half -> Non-Capital
+
         # +1 for rounding error
         crop_image_cv2("border_less_image.jpg", f"{IMAGE_ROOT}Non_Capital/Non_Capital_{letter}.jpg", 0, half_height+1, width, height)
 
