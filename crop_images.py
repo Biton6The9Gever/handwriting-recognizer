@@ -27,7 +27,7 @@ def crop_image_cv2(image_path, output_path, left, upper, right, lower):
         print(f"An error occurred: {e}")
 
 
-for i in range(2):  # TODO replace 1 with 26 for all letters
+for i in range(2):  # TODO replace 2 with 26 for all letters
     try:
         letter = chr(ord('A') + i)
         # crop the border 
