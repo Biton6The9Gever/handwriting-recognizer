@@ -23,15 +23,18 @@ class ImageAugmenter:
         cv2.imwrite(self.image_root + "{:03d}.jpg".format(i+self.sentence_amount*2), blurred_image)
     
     def process_images(self):
+        """Process augmentations for all basic images."""
         for i in range(1, self.sentence_amount + 1):
             image_path = self.image_root + "{:03d}.jpg".format(i)
             self.inverse_colors(image_path, i)
+            self.gauss_blur(image_path, i)
 
 
 
 if __name__ == "__main__":
-    # path for the images not including the index and extension
+    # Path for the images not including the index and extension
     IMAGE_ROOT = "../ML_Project/Dataset/SentencePictures/Sentence_"
+    # Amount of basic images
     SENTENCE_AMOUNT=48
     
     augmenter = ImageAugmenter(IMAGE_ROOT, SENTENCE_AMOUNT)
