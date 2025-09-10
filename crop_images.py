@@ -4,7 +4,7 @@ import os
 IMAGE_ROOT="../ML_Project/Dataset/Letters/"
 def crop_image_cv2(image_path, output_path, left, upper, right, lower):
     """
-    Crops an image using OpenCV.
+    crop an image given the cropping cords.
 
     Args:
         image_path (str): Path to the input image.
