@@ -25,8 +25,10 @@ def crop_image_cv2(image_path, output_path, left, upper, right, lower):
         print(f"Image successfully cropped and saved to {output_path}")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-
+# gap between rows of pixels measured by eye
+pixel_rows_gap=(1,2,2,1,2,2,1,2,2)  
+# gap between cols of pixels measured by eye
+pixel_cols_gap=(1,2,2,2,2,2,2,1,2,2,2,2,2,2) 
 for i in range(2):  # TODO replace 2 with 26 for all letters
     try:
         letter = chr(ord('A') + i)
