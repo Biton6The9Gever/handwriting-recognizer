@@ -7,10 +7,10 @@ class LetterImageProcessor:
         Initialize the image processor with a root directory.
         """
         self.image_root = image_root
-
+        self.box_size=65 #px for 2x2 box 
         # Define pixel gaps measured by eye
         self.pixel_rows_gap = (1, 2, 2, 1, 2, 2, 1, 2, 2)
-        self.pixel_cols_gap = (1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2)
+        self.pixel_cols_gap = (1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2)
 
     def crop_image_cv2(self, image_path, output_path, left, upper, right, lower):
         """

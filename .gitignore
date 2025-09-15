@@ -1,2 +1,5 @@
 .vscode
 PagePictures/
+__pycache__/
+*.py[cod]
+*.pyo
