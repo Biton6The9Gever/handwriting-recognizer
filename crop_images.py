@@ -115,8 +115,8 @@ class LetterImageProcessor:
                 for row in range(1, 11):  # 10 rows
                     left, upper, right, lower = get_box_coordinates(col, row)
 
-                    input_image = rf"{self.image_root}\{category}\{category}_A.jpg"
-                    output_image = rf"{self.image_root}\temp\test_{col}_{row}.jpg"
+                    input_image = rf"{self.image_root}/{category}/{category}_A.jpg"
+                    output_image = rf"{self.image_root}temp/test_{col}_{row}.jpg"
 
                     self.crop_image_cv2(
                         image_path=input_image,
