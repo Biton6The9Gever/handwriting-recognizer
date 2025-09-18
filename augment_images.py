@@ -33,9 +33,9 @@ class ImageAugmenter:
 
 if __name__ == "__main__":
     # Path for the images not including the index and extension
-    IMAGE_ROOT = "../ML_Project/Dataset/SentencePictures/Sentence_"
+    IMAGE_ROOT = "../ML_Project/Dataset/Letters/"
     # Amount of basic images
-    SENTENCE_AMOUNT=48
+    LETTER_AMOUNT=150
     
-    augmenter = ImageAugmenter(IMAGE_ROOT, SENTENCE_AMOUNT)
+    augmenter = ImageAugmenter(IMAGE_ROOT, LETTER_AMOUNT)
     augmenter.process_images()
