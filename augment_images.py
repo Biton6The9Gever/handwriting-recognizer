@@ -37,5 +37,5 @@ if __name__ == "__main__":
     # Amount of basic images
     LETTER_AMOUNT=150
     
-    augmenter = ImageAugmenter(IMAGE_ROOT, SENTENCE_AMOUNT)
+    augmenter = ImageAugmenter(IMAGE_ROOT, LETTER_AMOUNT)
     augmenter.process_images()
