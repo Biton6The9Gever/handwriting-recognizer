@@ -1,14 +1,15 @@
 import cv2
 import os
 import shutil
+from utils import Utils
 
 class LetterImageProcessor:
     
-    def __init__(self, image_root="../ML_Project/Dataset/"):
+    def __init__(self):
         """
         Initialize the image processor with a root directory.
         """
-        self.image_root = image_root
+        self.image_root = Utils.IMAGE_PATH
         self.box_size=65 #px for 2x2 box    
         # Define pixel gaps measured by eye
         self.pixel_rows_gap = (1, 2, 2, 1, 2, 2, 1, 2, 2)
@@ -150,6 +151,5 @@ class LetterImageProcessor:
 
 if __name__ == "__main__":
     processor = LetterImageProcessor()
-    image_root = processor.image_root
     processor.process_all_letters(limit=2)  # change to 26 for all letters
     
