@@ -151,7 +151,5 @@ class LetterImageProcessor:
 if __name__ == "__main__":
     processor = LetterImageProcessor()
     image_root = processor.image_root
-
     processor.process_all_letters(limit=2)  # change to 26 for all letters
-    # how can i delte the folders?
     
