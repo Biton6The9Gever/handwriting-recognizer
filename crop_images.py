@@ -1,13 +1,15 @@
 import cv2
 import os
+import shutil
 
 class LetterImageProcessor:
-    def __init__(self, image_root="../ML_Project/Dataset/Letters/"):
+    
+    def __init__(self, image_root="../ML_Project/Dataset/"):
         """
         Initialize the image processor with a root directory.
         """
         self.image_root = image_root
-        self.box_size=65 #px for 2x2 box 
+        self.box_size=65 #px for 2x2 box    
         # Define pixel gaps measured by eye
         self.pixel_rows_gap = (1, 2, 2, 1, 2, 2, 1, 2, 2)
         self.pixel_cols_gap = (1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2)
@@ -44,7 +46,7 @@ class LetterImageProcessor:
         3. Save results in respective folders
         """
         try:
-            input_path = f"{self.image_root}None_Cropped/None_Cropped_{letter}.jpg"
+            input_path = f"{self.image_root}Original/Original_{letter}.jpg"
             temp_path = "border_less_image.jpg"
 
             # Step 1: Crop the border
@@ -72,10 +74,12 @@ class LetterImageProcessor:
                 0, half_height + 1, width, height
             )
 
-            # Step 5: Clean up
+            # Step 5: Clean up the temporary file
             if os.path.exists(temp_path):
                 os.remove(temp_path)
-
+            
+            # Step 6: Process each individual letter box    
+            self.process_indvidual_letter(letter)
         except Exception as e:
             print(f"Error processing letter {letter}: {e}")
 
@@ -83,12 +87,71 @@ class LetterImageProcessor:
         """
         Process all letters A-Z (default 26).
         """
+        # Folders name to create
+        folders=["Capital", "Non_Capital"]
+        
+        # Create necessary folders
+        for folder in folders:
+            folder_path = os.path.join(self.image_root, folder)
+            os.makedirs(rf'{folder_path}', exist_ok=True)
+        
+        # Process each letter up to the limit
         for i in range(limit):
             letter = chr(ord('A') + i)
-            print(f"\n--- Processing letter {letter} ---")
+            print(f"\n --- Processing letter {letter} ---")
             self.process_letter(letter)
+        
+        # Delete the folders after processing
+        for folder in folders:
+            folder_path = os.path.join(self.image_root, folder)
+            if os.path.exists(folder_path):
+                shutil.rmtree(folder_path)
+                print(f"Deleted folder: {folder_path}")
+            
+        
+        
+            
+    def process_indvidual_letter(self, letter):
+        """
+        Process as individual letter.
+        """
+        print(f"\n--- Processing individual letter {letter} ---")
 
+        categories = ["Capital", "Non_Capital"]
+        prg = self.pixel_rows_gap
+        pcg = self.pixel_cols_gap
+        box_size = self.box_size
+        
+        def get_box_coordinates(col: int, row: int):
+            """Compute bounding box for a given column and row."""
+            left  = sum(pcg[:col-1]) + (col-1) * box_size
+            upper = sum(prg[:row-1]) + (row-1) * box_size
+            right = sum(pcg[:col]) + col * box_size
+            lower = sum(prg[:row]) + row * box_size
+            return left, upper, right, lower
+        
+        output_image_index = 1  
+        for category in categories:
+            for col in range(1, 16):  # 15 columns
+                for row in range(1, 11):  # 10 rows
+                    left, upper, right, lower = get_box_coordinates(col, row)
+                    input_image = rf"{self.image_root}/{category}/{category}_{letter}.jpg"
+                    output_image = rf"{self.image_root}Processed/{letter}_{output_image_index:04d}.jpg"
+
+                    self.crop_image_cv2(
+                        image_path=input_image,
+                        output_path=output_image,
+                        left=left,
+                        upper=upper,
+                        right=right,
+                        lower=lower,
+                    )
+                    output_image_index += 1
 
 if __name__ == "__main__":
     processor = LetterImageProcessor()
+    image_root = processor.image_root
+
     processor.process_all_letters(limit=2)  # change to 26 for all letters
+    # how can i delte the folders?
+    
