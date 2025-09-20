@@ -151,5 +151,5 @@ class LetterImageProcessor:
 
 if __name__ == "__main__":
     processor = LetterImageProcessor()
-    processor.process_all_letters(limit=2)  # change to 26 for all letters
+    processor.process_all_letters(limit=Utils.CHAR_AMOUNT)  # change to 26 for all letters
     

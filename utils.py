@@ -5,8 +5,13 @@ from collections import Counter
 
 class Utils:
     
-    DATA_PATH = "../ML_Project/Dataset/Processed/"
+    CHAR_AMOUNT=2
+    IMAGES_AMOUNT=150
+    AUGMENTATIONS_AMOUNT=2
     IMAGE_PATH ="../ML_Project/Dataset/"
+    DATA_PATH = "../ML_Project/Dataset/Processed/"
+    
+    
     @staticmethod
     def recreate_data_folder():
         folder_path=rf'../ML_Project/Dataset/Processed'
@@ -23,23 +28,32 @@ class Utils:
         return img.shape
     
     @staticmethod
-    def get_images_size_distribution(image_root, limit):
+    def get_images_size_distribution(image_root):
         sizes = []  # collect all sizes here
 
-        for i in range(limit):  
-            for index in range(1, 151):
-                image_path = rf'{image_root}{chr(ord("A") + i)}_{index:04d}.jpg'
-                size = Utils.get_image_size(image_path)
-                sizes.append(size)
-                
+        for i in range(Utils.CHAR_AMOUNT):  
+            letter = chr(ord("A") + i)
+            for index in range(1, Utils.IMAGES_AMOUNT * (Utils.AUGMENTATIONS_AMOUNT + 1) + 1):
+                image_path = os.path.join(image_root, f"{letter}_{index:04d}.jpg")
+
+                if os.path.exists(image_path):
+                    size = Utils.get_image_size(image_path)
+                    if size is not None:
+                        sizes.append(size)
+                    else:
+                        print(f"Failed to read image: {image_path}")
+                else:
+                    continue  # Skip if the image does not exist
+
+        # Count frequencies of each size
         size_counts = Counter(sizes)
-        
+
         # Print results
-        sum=0
+        total = 0
         for size, count in size_counts.items():
             print(f"Size: {size}, Count: {count}")
-            sum+=count
-        print(f"Total images processed: {sum}")
+            total += count
+        print(f"Total images processed: {total}")
         
         
 
