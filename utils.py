@@ -6,7 +6,8 @@ from collections import Counter
 class Utils:
     
     CHAR_AMOUNT=2
-    IMAGES_AMOUNT=150
+    IMAGES_AMOUNT=300
+    IMAGE_SIZE= (64, 64)
     AUGMENTATIONS_AMOUNT=2
     IMAGE_PATH ="../ML_Project/Dataset/"
     DATA_PATH = "../ML_Project/Dataset/Processed/"
@@ -54,6 +55,27 @@ class Utils:
             print(f"Size: {size}, Count: {count}")
             total += count
         print(f"Total images processed: {total}")
+        
+    def resize_base_images():
+         for i in range(Utils.CHAR_AMOUNT):  
+            letter = chr(ord("A") + i)
+            for index in range(1,Utils.IMAGES_AMOUNT+1):
+                image_path = os.path.join(Utils.DATA_PATH, f"{letter}_{index:04d}.jpg")
+                image=cv2.imread(image_path)
+                if image is not None:
+                    resized_image=cv2.resize(image,Utils.IMAGE_SIZE)
+                    cv2.imwrite(image_path,resized_image)
+                    print(f"Saved resized image to {image_path}")
+                else:
+                    continue
+    @staticmethod
+    def clear_console():
+        # Windows 
+        if os.name == 'nt':
+            os.system('cls')
+        # macOS / Linux
+        else:
+            os.system('clear')
         
         
 

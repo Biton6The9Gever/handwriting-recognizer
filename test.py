@@ -7,13 +7,20 @@ from augment_images import ImageAugmenter
 processor=LetterImageProcessor()
 augmenter=ImageAugmenter(Utils.DATA_PATH,Utils.IMAGES_AMOUNT)
 
-# Process and augment images
+# 1: Process images
 processor.process_all_letters(limit=Utils.CHAR_AMOUNT)
+
+# 2: Resize images
+Utils.resize_base_images()
+
+# 3: Augment images
 augmenter.process_images()
 
-Utils.get_images_size_distribution(Utils.DATA_PATH)
+input()
+Utils.clear_console()
 
 # Delete the data (Comment to see the data)
+Utils.get_images_size_distribution(Utils.DATA_PATH)
 Utils.recreate_data_folder()
 
 
