@@ -8,7 +8,7 @@ class Utils:
     CHAR_AMOUNT=2
     IMAGES_AMOUNT=300
     IMAGE_SIZE= (64, 64)
-    AUGMENTATIONS_AMOUNT=2
+    AUGMENTATIONS_AMOUNT=4
     IMAGE_PATH ="../ML_Project/Dataset/"
     DATA_PATH = "../ML_Project/Dataset/Processed/"
     
@@ -76,7 +76,28 @@ class Utils:
         # macOS / Linux
         else:
             os.system('clear')
+    
+    @staticmethod
+    def create_dataset():
+        from augment_images import ImageAugmenter
+        from crop_images import LetterImageProcessor
         
+        # Initialize processor and augmenter
+        processor=LetterImageProcessor()
+        augmenter=ImageAugmenter(Utils.DATA_PATH,Utils.IMAGES_AMOUNT)
+        
+        # 1: Process images
+        processor.process_all_letters(limit=Utils.CHAR_AMOUNT)
+        
+        # 2: Resize images
+        Utils.resize_base_images()
+        
+        # 3: Augment images
+        augmenter.process_images()
+        
+        input("Data created \n Press Enter to continue...")
+        Utils.clear_console()
+
         
 
 
