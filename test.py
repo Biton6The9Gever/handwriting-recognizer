@@ -1,5 +1,5 @@
 from utils import Utils
 
-# Utils.create_dataset()
-# Utils.get_images_size_distribution(Utils.DATA_PATH)
+Utils.create_dataset()
+Utils.get_images_size_distribution(Utils.DATA_PATH)
 Utils.recreate_data_folder()

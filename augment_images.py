@@ -45,7 +45,7 @@ class ImageAugmenter:
 
 
         # start index for new images after the base ones
-        start_index = (Utils.IMAGES_AMOUNT/2)
+        start_index = int(Utils.IMAGES_AMOUNT/2)
 
         for i in range(Utils.CHAR_AMOUNT):
             letter = chr(ord("A") + i)
@@ -63,7 +63,7 @@ class ImageAugmenter:
                             f"{letter}_{new_index:04d}.jpg"
                         )
                         cv2.imwrite(save_path, augmented_image)
-                        print(f"Saved augmented image: {save_path}")
+                        # print(f"Saved augmented image: {save_path}")
                     else:
                         print(f"Augmentation {augment.__name__} failed for image: {image_path}")
             

@@ -35,7 +35,8 @@ class LetterImageProcessor:
             # Crop the image (y:upper:lower, x:left:right)
             cropped_img = img[upper:lower, left:right]
             cv2.imwrite(output_path, cropped_img)
-            print(f"Cropped and saved: {output_path}")
+            if(output_path.find("Processed") ==-1):
+                print(f"Cropped and saved: {output_path}")
         except Exception as e:
             print(f"Error cropping {image_path}: {e}")
 

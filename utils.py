@@ -65,9 +65,9 @@ class Utils:
                 if image is not None:
                     resized_image=cv2.resize(image,Utils.IMAGE_SIZE)
                     cv2.imwrite(image_path,resized_image)
-                    print(f"Saved resized image to {image_path}")
+                    # print(f"Saved resized image to {image_path}")
                 else:
-                    continue
+                    print(f"Resizing failed for image {image_path}")
     @staticmethod
     def clear_console():
         # Windows 
