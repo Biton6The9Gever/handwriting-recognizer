@@ -29,7 +29,7 @@ class ImageAugmenter:
         image = cv2.imread(image_path)
         h, w = image.shape[:2]
         M = cv2.getRotationMatrix2D((w/2, h/2), angle, 1)
-        return cv2.warpAffine(image, M, (w, h), borderValue=255)
+        return cv2.warpAffine(image, M, (w, h), borderValue=(255, 255, 255))
     
     def negative_rotate(self, image_path,angle=-15):
         if image_path is None or not os.path.exists(image_path):
@@ -37,7 +37,7 @@ class ImageAugmenter:
         image = cv2.imread(image_path)
         h, w = image.shape[:2]
         M = cv2.getRotationMatrix2D((w/2, h/2), angle, 1)
-        return cv2.warpAffine(image, M, (w, h), borderValue=255)
+        return cv2.warpAffine(image, M, (w, h), borderValue=(255, 255, 255))
     
     def process_images(self):
         """Process augmentations for all basic images."""
@@ -45,7 +45,7 @@ class ImageAugmenter:
 
 
         # start index for new images after the base ones
-        start_index = int(Utils.IMAGES_AMOUNT/2)
+        start_index = self.images_amount
 
         for i in range(Utils.CHAR_AMOUNT):
             letter = chr(ord("A") + i)
