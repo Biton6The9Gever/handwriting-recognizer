@@ -1,7 +1,7 @@
 import os
 import cv2
 import random
-from utils import Utils
+from Scripts.utils import Utils
 
 class ImageAugmenter:
     def __init__(self, data_path, images_amount):

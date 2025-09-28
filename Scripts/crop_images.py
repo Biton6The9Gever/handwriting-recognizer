@@ -1,7 +1,7 @@
 import cv2
 import os
 import shutil
-from utils import Utils
+from Scripts.utils import Utils
 
 class LetterImageProcessor:
     

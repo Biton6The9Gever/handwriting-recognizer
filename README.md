@@ -7,10 +7,12 @@ ML_PROJECT
 ├─ Dataset
 │  ├─ Original
 │  └─ Processed
-├─ augment_images.py
-├─ crop_images.py
-├─ test.py
-└─ utils.py
+├─ scripts          
+│  ├─ augment_images.py
+│  ├─ crop_images.py
+│  ├─ test.py
+│  └─ utils.py
+└─ README.md
 ```
 
 

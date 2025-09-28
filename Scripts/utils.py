@@ -1,6 +1,7 @@
 import os
 import cv2
 import shutil
+import pandas as pd
 from collections import Counter
 
 class Utils:
@@ -11,6 +12,7 @@ class Utils:
     AUGMENTATIONS_AMOUNT=4
     IMAGE_PATH ="../ML_Project/Dataset/"
     DATA_PATH = "../ML_Project/Dataset/Processed/"
+    DATA_CSV="test.csv"
     
     
     @staticmethod
@@ -79,8 +81,8 @@ class Utils:
     
     @staticmethod
     def create_dataset():
-        from augment_images import ImageAugmenter
-        from crop_images import LetterImageProcessor
+        from Scripts.augment_images import ImageAugmenter
+        from Scripts.crop_images import LetterImageProcessor
         
         # Initialize processor and augmenter
         processor=LetterImageProcessor()
@@ -97,7 +99,34 @@ class Utils:
         
         input("Data created \n Press Enter to continue...")
         Utils.clear_console()
-
         
 
+    @staticmethod
+    def create_csv_file():
+        import pandas as pd
+
+        # List of letters
+        letters = [chr(ord('A') + i) for i in range(Utils.CHAR_AMOUNT)]
+
+        # List of indices
+        indices = range(1, Utils.IMAGES_AMOUNT * (Utils.AUGMENTATIONS_AMOUNT + 1) + 1)
+
+        # List of paths
+        paths = [
+            Utils.DATA_PATH + f"{letter}_{index:04d}.jpg"
+            for letter in letters
+            for index in indices
+        ]
+
+        # Create the label list to match paths
+        labels = [letter for letter in letters for _ in indices]
+
+        # Make sure both lists have the same length
+        assert len(labels) == len(paths), "Labels and paths must be the same length"
+
+        data = {'label': labels, 'path': paths}
+
+        # Save Data
+        df = pd.DataFrame(data)
+        df.to_csv(Utils.DATA_CSV, index=False)
 
