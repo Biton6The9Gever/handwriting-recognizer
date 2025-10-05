@@ -4,13 +4,14 @@ A machine learning model to recognize and classify my handwriting
 ## Folder structure
 ```text
 ML_PROJECT
+├─ main.py
+├─ dataset.csv
 ├─ Dataset
 │  ├─ Original
 │  └─ Processed
 ├─ scripts          
 │  ├─ augment_images.py
 │  ├─ crop_images.py
-│  ├─ test.py
 │  └─ utils.py
 └─ README.md
 ```

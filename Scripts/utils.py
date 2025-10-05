@@ -4,129 +4,113 @@ import shutil
 import pandas as pd
 from collections import Counter
 
-class Utils:
-    
-    CHAR_AMOUNT=26
-    IMAGES_AMOUNT=300
-    IMAGE_SIZE= (64, 64)
-    AUGMENTATIONS_AMOUNT=4
-    IMAGE_PATH ="../ML_Project/Dataset/"
-    DATA_PATH = "../ML_Project/Dataset/Processed/"
-    DATA_CSV="test.csv"
-    
-    
-    @staticmethod
-    def recreate_data_folder():
-        folder_path=rf'../ML_Project/Dataset/Processed'
-        
-        # Recreate the folder
+# ==== CONSTANTS ====
+CHAR_AMOUNT = 26
+IMAGES_AMOUNT = 300
+IMAGE_SIZE = (64, 64)
+AUGMENTATIONS_AMOUNT = 4
+IMAGE_PATH = "../ML_Project/Dataset/"
+DATA_PATH = "../ML_Project/Dataset/Processed/"
+DATA_CSV = "DataSet.csv"
+
+
+# ==== FUNCTIONS ====
+
+def recreate_data_folder():
+    folder_path = DATA_PATH
+    try:
         if os.path.exists(folder_path):
-            shutil.rmtree(folder_path)
-            os.makedirs(rf'{folder_path}', exist_ok=True)
-            print(f"Recreated folder: {folder_path}")
-            
-    @staticmethod
-    def get_image_size(image_path):
-        img=cv2.imread(image_path)
-        return img.shape
-    
-    @staticmethod
-    def get_images_size_distribution(image_root):
-        sizes = []  # collect all sizes here
+            # ignores permission errors
+            shutil.rmtree(folder_path, ignore_errors=True)  
+        os.makedirs(folder_path, exist_ok=True)
+        print(f"Recreated folder: {folder_path}")
+    except Exception:
+        pass
 
-        for i in range(Utils.CHAR_AMOUNT):  
-            letter = chr(ord("A") + i)
-            for index in range(1, Utils.IMAGES_AMOUNT * (Utils.AUGMENTATIONS_AMOUNT + 1) + 1):
-                image_path = os.path.join(image_root, f"{letter}_{index:04d}.jpg")
 
-                if os.path.exists(image_path):
-                    size = Utils.get_image_size(image_path)
-                    if size is not None:
-                        sizes.append(size)
-                    else:
-                        print(f"Failed to read image: {image_path}")
+def get_image_size(image_path):
+    """Return the dimensions of the image at the given path. for debugging purposes"""
+    img = cv2.imread(image_path)
+    return img.shape if img is not None else None
+
+
+def get_images_size_distribution(image_root):
+    """Get the distribution of image sizes in the dataset. for debugging purposes"""
+    sizes = []
+    for i in range(CHAR_AMOUNT):
+        letter = chr(ord("A") + i)
+        for index in range(1, IMAGES_AMOUNT * (AUGMENTATIONS_AMOUNT + 1) + 1):
+            image_path = os.path.join(image_root, f"{letter}_{index:04d}.jpg")
+            if os.path.exists(image_path):
+                size = get_image_size(image_path)
+                if size is not None:
+                    sizes.append(size)
                 else:
-                    continue  # Skip if the image does not exist
+                    print(f"Failed to read image: {image_path}")
 
-        # Count frequencies of each size
-        size_counts = Counter(sizes)
+    size_counts = Counter(sizes)
+    total = sum(size_counts.values())
+    for size, count in size_counts.items():
+        print(f"Size: {size}, Count: {count}")
+    print(f"Total images processed: {total}")
 
-        # Print results
-        total = 0
-        for size, count in size_counts.items():
-            print(f"Size: {size}, Count: {count}")
-            total += count
-        print(f"Total images processed: {total}")
-        
-    def resize_base_images():
-         for i in range(Utils.CHAR_AMOUNT):  
-            letter = chr(ord("A") + i)
-            for index in range(1,Utils.IMAGES_AMOUNT+1):
-                image_path = os.path.join(Utils.DATA_PATH, f"{letter}_{index:04d}.jpg")
-                image=cv2.imread(image_path)
-                if image is not None:
-                    resized_image=cv2.resize(image,Utils.IMAGE_SIZE)
-                    cv2.imwrite(image_path,resized_image)
-                    # print(f"Saved resized image to {image_path}")
-                else:
-                    print(f"Resizing failed for image {image_path}")
-    @staticmethod
-    def clear_console():
-        # Windows 
-        if os.name == 'nt':
-            os.system('cls')
-        # macOS / Linux
-        else:
-            os.system('clear')
-    
-    @staticmethod
-    def create_dataset():
-        from Scripts.augment_images import ImageAugmenter
-        from Scripts.crop_images import LetterImageProcessor
-        
-        # Initialize processor and augmenter
-        processor=LetterImageProcessor()
-        augmenter=ImageAugmenter(Utils.DATA_PATH,Utils.IMAGES_AMOUNT)
-        
-        # 1: Process images
-        processor.process_all_letters(limit=Utils.CHAR_AMOUNT)
-        
-        # 2: Resize images
-        Utils.resize_base_images()
-        
-        # 3: Augment images
-        augmenter.process_images()
-        
-        input("Data created \n Press Enter to continue...")
-        Utils.clear_console()
-        
 
-    @staticmethod
-    def create_csv_file():
-        import pandas as pd
+def resize_base_images():
+    for i in range(CHAR_AMOUNT):
+        letter = chr(ord("A") + i)
+        for index in range(1, IMAGES_AMOUNT + 1):
+            image_path = os.path.join(DATA_PATH, f"{letter}_{index:04d}.jpg")
+            image = cv2.imread(image_path)
+            if image is not None:
+                resized_image = cv2.resize(image, IMAGE_SIZE)
+                cv2.imwrite(image_path, resized_image)
+            else:
+                print(f"Resizing failed for image {image_path}")
 
-        # List of letters
-        letters = [chr(ord('A') + i) for i in range(Utils.CHAR_AMOUNT)]
 
-        # List of indices
-        indices = range(1, Utils.IMAGES_AMOUNT * (Utils.AUGMENTATIONS_AMOUNT + 1) + 1)
+def clear_console():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-        # List of paths
-        paths = [
-            Utils.DATA_PATH + f"{letter}_{index:04d}.jpg"
-            for letter in letters
-            for index in indices
-        ]
 
-        # Create the label list to match paths
-        labels = [letter for letter in letters for _ in indices]
+def create_csv_file():
+    letters = [chr(ord('A') + i) for i in range(CHAR_AMOUNT)]
+    indices = range(1, IMAGES_AMOUNT * (AUGMENTATIONS_AMOUNT + 1) + 1)
 
-        # Make sure both lists have the same length
-        assert len(labels) == len(paths), "Labels and paths must be the same length"
+    paths = [os.path.join(DATA_PATH, f"{letter}_{index:04d}.jpg")
+             for letter in letters for index in indices]
+    labels = [letter for letter in letters for _ in indices]
 
-        data = {'label': labels, 'path': paths}
+    assert len(labels) == len(paths), "Labels and paths must be the same length"
 
-        # Save Data
-        df = pd.DataFrame(data)
-        df.to_csv(Utils.DATA_CSV, index=False)
+    df = pd.DataFrame({'label': labels, 'path': paths})
+    df.to_csv(DATA_CSV, index=False)
+    print(f"CSV file created: {DATA_CSV}")
 
+
+def create_dataset():
+    """
+    Full dataset creation workflow:
+    1. Crop images
+    2. Resize images
+    3. Augment images
+    4. Create CSV
+    """
+    from Scripts.crop_images import process_all_letters
+    from Scripts.augment_images import process_images
+
+    print("Processing images...")
+    # 1. Crop letters into individual boxes
+    process_all_letters(limit=CHAR_AMOUNT)
+
+    # 2. Resize base images
+    resize_base_images()
+
+    # 3. Augment images
+    process_images()
+
+    # 4. Create CSV
+    print(f'\n--- Creating .csv file named {DATA_CSV} ---')
+    create_csv_file()
+
+    input("Data created.\nPress Enter to continue...")
+    clear_console()
