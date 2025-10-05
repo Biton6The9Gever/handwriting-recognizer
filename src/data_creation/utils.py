@@ -83,13 +83,18 @@ def create_csv_file():
     letters = [chr(ord('A') + i) for i in range(CHAR_AMOUNT)]
     indices = range(1, IMAGES_AMOUNT * (AUGMENTATIONS_AMOUNT + 1) + 1)
 
-    paths = [os.path.join(PROCESSED_DATA_PATH, f"{letter}_{index:04d}.jpg")
-             for letter in letters for index in indices]
+    # build absolute paths
+    abs_paths = [os.path.join(PROCESSED_DATA_PATH, f"{letter}_{index:04d}.jpg")
+                 for letter in letters for index in indices]
+
+    # convert to relative paths (relative to the project root)
+    rel_paths = [os.path.relpath(p, PROJECT_ROOT) for p in abs_paths]
+
     labels = [letter for letter in letters for _ in indices]
 
-    assert len(labels) == len(paths), "Labels and paths must be the same length"
+    assert len(labels) == len(rel_paths), "Labels and paths must be the same length"
 
-    df = pd.DataFrame({'label': labels, 'path': paths})
+    df = pd.DataFrame({'label': labels, 'path': rel_paths})
     df.to_csv(DATA_CSV, index=False)
     print(f"CSV file created: {DATA_CSV}")
 
