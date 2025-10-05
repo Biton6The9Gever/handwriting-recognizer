@@ -5,7 +5,7 @@ A machine learning model to recognize and classify my handwriting
 ```text
 ML_PROJECT
 ├─ main.py
-├─ dataset.csv
+├─ DataSet.csv
 ├─ Dataset
 │  ├─ Original
 │  └─ Processed
@@ -20,4 +20,5 @@ ML_PROJECT
 ## List of things I've learn in this project
 - working with the cv2 library
 - data augmentation
+- machine learning pipelines
 - and more!
