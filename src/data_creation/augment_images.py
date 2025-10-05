@@ -1,6 +1,6 @@
 import os
 import cv2
-from Scripts import utils
+from data_creation import utils
 
 
 # === Image augmentation functions ===
@@ -41,7 +41,7 @@ def negative_rotate(image_path, angle=-15):
     return cv2.warpAffine(image, M, (w, h), borderValue=(255, 255, 255))
 
 
-def process_images(data_path=utils.DATA_PATH, images_amount=utils.IMAGES_AMOUNT):
+def process_images(data_path=utils.PROCESSED_DATA_PATH, images_amount=utils.IMAGES_AMOUNT):
     """Apply all augmentations to all base images."""
     augmentations = [
         inverse_colors,

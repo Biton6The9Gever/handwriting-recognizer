@@ -1,10 +1,10 @@
 import cv2
 import os
 import shutil
-from Scripts import utils
+from data_creation import utils
 
 # === GLOBAL CONFIG ===
-IMAGE_ROOT = utils.IMAGE_PATH
+IMAGE_ROOT = utils.RAW_DATA_PATH
 BOX_SIZE = 65  # px for 2x2 box
 PIXEL_ROWS_GAP = (1, 2, 2, 1, 2, 2, 1, 2, 2)
 PIXEL_COLS_GAP = (1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2, 2, 2)
@@ -19,7 +19,7 @@ def crop_image_cv2(image_path, output_path, left, upper, right, lower):
 
         cropped_img = img[upper:lower, left:right]
         cv2.imwrite(output_path, cropped_img)
-        if "Processed" not in output_path:
+        if "processed" not in output_path:
             print(f"Cropped and saved: {output_path}")
     except Exception as e:
         print(f"Error cropping {image_path}: {e}")
@@ -45,7 +45,7 @@ def process_individual_letter(letter):
         for col in range(1, 16):
             for row in range(1, 11):
                 left, upper, right, lower = get_box_coordinates(col, row)
-                output_image = os.path.join(utils.DATA_PATH, f"{letter}_{output_index:04d}.jpg")
+                output_image = os.path.join(utils.PROCESSED_DATA_PATH, f"{letter}_{output_index:04d}.jpg")
                 crop_image_cv2(input_image, output_image, left, upper, right, lower)
                 output_index += 1
 
@@ -53,7 +53,7 @@ def process_individual_letter(letter):
 def process_letter(letter):
     """Process one letter (crop border, split, and create boxes)."""
     try:
-        input_path = os.path.join(IMAGE_ROOT, "Original", f"Original_{letter}.jpg")
+        input_path = os.path.join(IMAGE_ROOT, f"raw_{letter.lower()}.jpg")
         temp_path = "border_less_image.jpg"
 
         # Step 1: Crop border

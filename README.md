@@ -3,17 +3,23 @@ A machine learning model to recognize and classify my handwriting
 
 ## Folder structure
 ```text
-ML_PROJECT
-├─ main.py
-├─ DataSet.csv
-├─ Dataset
-│  ├─ Original
-│  └─ Processed
-├─ scripts          
-│  ├─ augment_images.py
-│  ├─ crop_images.py
-│  └─ utils.py
-└─ README.md
+data/
+│   ├── raw/
+│   │   ├── raw_a.jpg
+│   │   ├── raw_b.jpg
+│   │   ├── ...
+│   │   └── raw_z.jpg
+│   ├── processed/              # hold the data after processing
+│   └── dataset.csv    
+src/
+│   ├── data_creation/
+│   │   ├── augment_images.py
+│   │   ├── crop_images.py
+│   │   └── utils.py
+│   ├── data_preparation/
+│   │   └── preprocess_data.py
+│   └── main.py
+README.md
 ```
 
 

@@ -1,4 +1,4 @@
-from Scripts.utils import recreate_data_folder, create_dataset
+from data_creation.utils import recreate_data_folder, create_dataset
 
 # create the dataset
 create_dataset()

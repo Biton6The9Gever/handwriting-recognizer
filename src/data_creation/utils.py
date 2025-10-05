@@ -9,15 +9,20 @@ CHAR_AMOUNT = 26
 IMAGES_AMOUNT = 300
 IMAGE_SIZE = (64, 64)
 AUGMENTATIONS_AMOUNT = 4
-IMAGE_PATH = "../ML_Project/Dataset/"
-DATA_PATH = "../ML_Project/Dataset/Processed/"
-DATA_CSV = "DataSet.csv"
+
+# ==== PATH SETUP ====
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+RAW_DATA_PATH = os.path.join(DATA_DIR, "raw")
+PROCESSED_DATA_PATH = os.path.join(DATA_DIR, "processed")
+DATA_CSV = os.path.join(DATA_DIR, "dataset.csv")
+
 
 
 # ==== FUNCTIONS ====
 
 def recreate_data_folder():
-    folder_path = DATA_PATH
+    folder_path = PROCESSED_DATA_PATH
     try:
         if os.path.exists(folder_path):
             # ignores permission errors
@@ -56,16 +61,18 @@ def get_images_size_distribution(image_root):
 
 
 def resize_base_images():
+    print('\n --- Resizing base images ---')
     for i in range(CHAR_AMOUNT):
         letter = chr(ord("A") + i)
         for index in range(1, IMAGES_AMOUNT + 1):
-            image_path = os.path.join(DATA_PATH, f"{letter}_{index:04d}.jpg")
+            image_path = os.path.join(PROCESSED_DATA_PATH, f"{letter}_{index:04d}.jpg")
             image = cv2.imread(image_path)
             if image is not None:
                 resized_image = cv2.resize(image, IMAGE_SIZE)
                 cv2.imwrite(image_path, resized_image)
             else:
                 print(f"Resizing failed for image {image_path}")
+    print("Resizing completed.")
 
 
 def clear_console():
@@ -76,7 +83,7 @@ def create_csv_file():
     letters = [chr(ord('A') + i) for i in range(CHAR_AMOUNT)]
     indices = range(1, IMAGES_AMOUNT * (AUGMENTATIONS_AMOUNT + 1) + 1)
 
-    paths = [os.path.join(DATA_PATH, f"{letter}_{index:04d}.jpg")
+    paths = [os.path.join(PROCESSED_DATA_PATH, f"{letter}_{index:04d}.jpg")
              for letter in letters for index in indices]
     labels = [letter for letter in letters for _ in indices]
 
@@ -95,8 +102,8 @@ def create_dataset():
     3. Augment images
     4. Create CSV
     """
-    from Scripts.crop_images import process_all_letters
-    from Scripts.augment_images import process_images
+    from data_creation.crop_images import process_all_letters
+    from data_creation.augment_images import process_images
 
     print("Processing images...")
     # 1. Crop letters into individual boxes
@@ -114,3 +121,4 @@ def create_dataset():
 
     input("Data created.\nPress Enter to continue...")
     clear_console()
+    
