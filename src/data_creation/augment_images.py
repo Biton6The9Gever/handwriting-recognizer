@@ -1,5 +1,7 @@
 import os
 import cv2
+import time
+from tqdm import tqdm
 from data_creation import utils
 
 
@@ -41,7 +43,7 @@ def negative_rotate(image_path, angle=-15):
     return cv2.warpAffine(image, M, (w, h), borderValue=(255, 255, 255))
 
 
-def process_images(data_path=utils.PROCESSED_DATA_PATH, images_amount=utils.IMAGES_AMOUNT):
+def augment_images(data_path=utils.PROCESSED_DATA_PATH, images_amount=utils.IMAGES_AMOUNT):
     """Apply all augmentations to all base images."""
     augmentations = [
         inverse_colors,
@@ -50,24 +52,39 @@ def process_images(data_path=utils.PROCESSED_DATA_PATH, images_amount=utils.IMAG
         negative_rotate
     ]
 
+    print("\n[START] Augmenting images...")
+    start_time = time.time()
+
     start_index = images_amount
+    total = utils.CHAR_AMOUNT * len(augmentations) * images_amount
+    success, failed = 0, 0
 
-    for i in range(utils.CHAR_AMOUNT):
-        letter = chr(ord("A") + i)
+    # Single progress bar for all operations
+    with tqdm(total=total, desc="[PROGRESS] Augmenting", ncols=100) as pbar:
+        for i in range(utils.CHAR_AMOUNT):
+            letter = chr(ord("A") + i)
 
-        for method_idx, augment in enumerate(augmentations, start=1):
-            for index in range(1, images_amount + 1):
-                image_path = os.path.join(data_path, f"{letter}_{index:04d}.jpg")
-                augmented_image = augment(image_path)
+            for method_idx, augment in enumerate(augmentations, start=1):
+                for index in range(1, images_amount + 1):
+                    image_path = os.path.join(data_path, f"{letter}_{index:04d}.jpg")
+                    augmented_image = augment(image_path)
 
-                if augmented_image is not None:
-                    new_index = start_index + (method_idx - 1) * images_amount + index
-                    save_path = os.path.join(data_path, f"{letter}_{new_index:04d}.jpg")
-                    cv2.imwrite(save_path, augmented_image)
-                    # print(f"Saved augmented image: {save_path}")
-                else:
-                    print(f"Augmentation {augment.__name__} failed for image: {image_path}")
+                    if augmented_image is not None:
+                        new_index = start_index + (method_idx - 1) * images_amount + index
+                        save_path = os.path.join(data_path, f"{letter}_{new_index:04d}.jpg")
+                        cv2.imwrite(save_path, augmented_image)
+                        success += 1
+                    else:
+                        print(f"[WARN] Augmentation {augment.__name__} failed for image: {image_path}")
+                        failed += 1
+
+                    pbar.update(1)
+
+    elapsed = time.time() - start_time
+    print(f"[END] Augmented {success}/{total} images in {elapsed:.2f} seconds.")
+    if failed:
+        print(f"[INFO] {failed} images failed to augment.")
 
 
 if __name__ == "__main__":
-    process_images()
+    augment_images()

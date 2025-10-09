@@ -18,6 +18,7 @@ src/
 │   │   └── utils.py
 │   ├── data_preparation/
 │   │   └── preprocess_data.py
+│   ├── flush_data.py
 │   └── main.py
 README.md
 ```

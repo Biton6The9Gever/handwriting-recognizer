@@ -1,7 +1,9 @@
 import os
 import cv2
 import shutil
+import itertools
 import pandas as pd
+from tqdm import tqdm
 from collections import Counter
 
 # ==== CONSTANTS ====
@@ -28,7 +30,7 @@ def recreate_data_folder():
             # ignores permission errors
             shutil.rmtree(folder_path, ignore_errors=True)  
         os.makedirs(folder_path, exist_ok=True)
-        print(f"Recreated folder: {folder_path}")
+        print(f"[WARN] Recreated data folder: {folder_path}")
     except Exception:
         pass
 
@@ -51,7 +53,7 @@ def get_images_size_distribution(image_root):
                 if size is not None:
                     sizes.append(size)
                 else:
-                    print(f"Failed to read image: {image_path}")
+                    print(f"[WARN] Failed to read image: {image_path}")
 
     size_counts = Counter(sizes)
     total = sum(size_counts.values())
@@ -61,18 +63,24 @@ def get_images_size_distribution(image_root):
 
 
 def resize_base_images():
-    print('\n --- Resizing base images ---')
-    for i in range(CHAR_AMOUNT):
+    print("\n[START] Resizing base images...")
+
+    total = CHAR_AMOUNT * IMAGES_AMOUNT
+    count = 0
+
+    for i, index in tqdm(itertools.product(range(CHAR_AMOUNT), range(1, IMAGES_AMOUNT + 1)),
+                         total=total, desc="[PROGRESS] Images", ncols=80):
         letter = chr(ord("A") + i)
-        for index in range(1, IMAGES_AMOUNT + 1):
-            image_path = os.path.join(PROCESSED_DATA_PATH, f"{letter}_{index:04d}.jpg")
-            image = cv2.imread(image_path)
-            if image is not None:
-                resized_image = cv2.resize(image, IMAGE_SIZE)
-                cv2.imwrite(image_path, resized_image)
-            else:
-                print(f"Resizing failed for image {image_path}")
-    print("Resizing completed.")
+        image_path = os.path.join(PROCESSED_DATA_PATH, f"{letter}_{index:04d}.jpg")
+        image = cv2.imread(image_path)
+        if image is not None:
+            resized_image = cv2.resize(image, IMAGE_SIZE)
+            cv2.imwrite(image_path, resized_image)
+            count += 1
+        else:
+            print(f"[WARN] Resizing failed for image {image_path}")
+
+    print(f"[END] Resized {count}/{total} images successfully.")
 
 
 def clear_console():
@@ -92,11 +100,11 @@ def create_csv_file():
 
     labels = [letter for letter in letters for _ in indices]
 
-    assert len(labels) == len(rel_paths), "Labels and paths must be the same length"
+    assert len(labels) == len(rel_paths), "[WARN] Labels and paths must be the same length"
 
     df = pd.DataFrame({'label': labels, 'path': rel_paths})
     df.to_csv(DATA_CSV, index=False)
-    print(f"CSV file created: {DATA_CSV}")
+    print(f"\n[INFO] Created CSV file at {DATA_CSV} with {len(df)} entries.")
 
 
 def create_dataset():
@@ -107,23 +115,21 @@ def create_dataset():
     3. Augment images
     4. Create CSV
     """
-    from data_creation.crop_images import process_all_letters
-    from data_creation.augment_images import process_images
+    from data_creation.crop_images import crop_all_letters
+    from data_creation.augment_images import augment_images
 
-    print("Processing images...")
+    print("[START] Starting dataset creation")
     # 1. Crop letters into individual boxes
-    process_all_letters(limit=CHAR_AMOUNT)
+    crop_all_letters(limit=CHAR_AMOUNT)
 
     # 2. Resize base images
     resize_base_images()
 
     # 3. Augment images
-    process_images()
+    augment_images()
 
     # 4. Create CSV
-    print(f'\n--- Creating .csv file named {DATA_CSV} ---')
     create_csv_file()
 
-    input("Data created.\nPress Enter to continue...")
-    clear_console()
+    print("\n[END] Dataset creation complete \n")
     

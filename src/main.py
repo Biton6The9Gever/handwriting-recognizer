@@ -1,7 +1,8 @@
-from data_creation.utils import recreate_data_folder, create_dataset
+from data_creation.utils import create_dataset
+from data_preparation.preprocess_data import generate_dataset_vectors
 
 # create the dataset
 create_dataset()
 
-# recreate the data folder to remove all the new photos after use
-recreate_data_folder()
+# generate the X, y vectors for training
+X, y = generate_dataset_vectors()

@@ -1,6 +1,7 @@
 import cv2
 import os
 import shutil
+from tqdm import tqdm
 from data_creation import utils
 
 # === GLOBAL CONFIG ===
@@ -15,19 +16,16 @@ def crop_image_cv2(image_path, output_path, left, upper, right, lower):
     try:
         img = cv2.imread(image_path)
         if img is None:
-            raise FileNotFoundError(f"Image not found at {image_path}")
+            raise FileNotFoundError(f"[WARN] Image not found at {image_path}")
 
         cropped_img = img[upper:lower, left:right]
         cv2.imwrite(output_path, cropped_img)
-        if "processed" not in output_path:
-            print(f"Cropped and saved: {output_path}")
     except Exception as e:
-        print(f"Error cropping {image_path}: {e}")
+        print(f"[WARN] Error cropping {image_path}: {e}")
 
 
-def process_individual_letter(letter):
+def crop_individual_letter(letter):
     """Crop and save each small letter box from a given letter image."""
-    print(f"\n--- Processing individual letter {letter} ---")
 
     categories = ["Capital", "Non_Capital"]
 
@@ -50,7 +48,7 @@ def process_individual_letter(letter):
                 output_index += 1
 
 
-def process_letter(letter):
+def crop_letter(letter):
     """Process one letter (crop border, split, and create boxes)."""
     try:
         input_path = os.path.join(IMAGE_ROOT, f"raw_{letter.lower()}.jpg")
@@ -61,7 +59,7 @@ def process_letter(letter):
 
         img = cv2.imread(temp_path)
         if img is None:
-            raise ValueError(f"Temporary file {temp_path} is empty for {letter}")
+            raise ValueError(f"[WARN] Temporary file {temp_path} is empty for {letter}")
 
         height, width = img.shape[:2]
         half_height = height // 2
@@ -77,33 +75,48 @@ def process_letter(letter):
             os.remove(temp_path)
 
         # Step 4: Process individual boxes
-        process_individual_letter(letter)
+        crop_individual_letter(letter)
 
     except Exception as e:
-        print(f"Error processing letter {letter}: {e}")
+        print(f"[ERROR] processing letter {letter}: {e}")
 
 
-def process_all_letters(limit=26):
+def crop_all_letters(limit=26):
     """Process all letters A-Z."""
+    print("\n[START] Cropping all letters...")
+
     folders = ["Capital", "Non_Capital"]
 
     # Create folders
     for folder in folders:
         os.makedirs(os.path.join(IMAGE_ROOT, folder), exist_ok=True)
 
-    # Process letters
-    for i in range(limit):
+    total = limit
+    processed = 0
+    failed = 0
+
+    # Process letters with progress bar
+    for i in tqdm(range(limit), desc="[PROGRESS] Cropping letters", ncols=100):
         letter = chr(ord("A") + i)
-        print(f"\n --- Processing letter {letter} ---")
-        process_letter(letter)
+        try:
+            crop_letter(letter)
+            processed += 1
+        except Exception as e:
+            print(f"[WARN] Failed to process letter '{letter}': {e}")
+            failed += 1
 
     # Delete temp folders
     for folder in folders:
         folder_path = os.path.join(IMAGE_ROOT, folder)
         if os.path.exists(folder_path):
             shutil.rmtree(folder_path)
-            print(f"Deleted folder: {folder_path}")
+
+    # Summary
+    print(f"[END] Cropping letters ({processed}/{total} processed successfully)")
+    if failed:
+        print(f"[INFO] {failed} letters failed.")
+
 
 
 if __name__ == "__main__":
-    process_all_letters(limit=utils.CHAR_AMOUNT)
+    crop_all_letters(limit=utils.CHAR_AMOUNT)
