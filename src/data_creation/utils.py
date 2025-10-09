@@ -23,16 +23,15 @@ DATA_CSV = os.path.join(DATA_DIR, "dataset.csv")
 
 # ==== FUNCTIONS ====
 
-def recreate_data_folder():
-    folder_path = PROCESSED_DATA_PATH
+def recreate_data_folder(folder_path=PROCESSED_DATA_PATH):
     try:
         if os.path.exists(folder_path):
-            # ignores permission errors
-            shutil.rmtree(folder_path, ignore_errors=True)  
+            shutil.rmtree(folder_path, ignore_errors=True)
         os.makedirs(folder_path, exist_ok=True)
-        print(f"[WARN] Recreated data folder: {folder_path}")
-    except Exception:
-        pass
+        open(os.path.join(folder_path, ".gitkeep"), "a").close()
+        print(f"[WARN] Recreated data folder with .gitkeep: {folder_path}")
+    except Exception as e:
+        print(f"[ERROR] Failed to recreate folder {folder_path}: {e}")
 
 
 def get_image_size(image_path):
