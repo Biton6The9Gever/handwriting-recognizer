@@ -60,7 +60,7 @@ def augment_images(data_path=utils.PROCESSED_DATA_PATH, images_amount=utils.IMAG
     success, failed = 0, 0
 
     # Single progress bar for all operations
-    with tqdm(total=total, desc="[PROGRESS] Augmenting", ncols=100) as pbar:
+    with tqdm(total=total, desc="[PROGRESS] Augmenting", ncols=80) as pbar:
         for i in range(utils.CHAR_AMOUNT):
             letter = chr(ord("A") + i)
 

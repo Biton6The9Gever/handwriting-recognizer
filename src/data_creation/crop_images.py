@@ -96,7 +96,7 @@ def crop_all_letters(limit=26):
     failed = 0
 
     # Process letters with progress bar
-    for i in tqdm(range(limit), desc="[PROGRESS] Cropping letters", ncols=100):
+    for i in tqdm(range(limit), desc="[PROGRESS] Cropping letters", ncols=80):
         letter = chr(ord("A") + i)
         try:
             crop_letter(letter)
