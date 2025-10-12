@@ -17,6 +17,7 @@ src/
 │   │   ├── crop_images.py
 │   │   └── utils.py
 │   ├── data_preparation/
+│   │   ├── data_analysis.py
 │   │   └── preprocess_data.py
 │   ├── flush_data.py
 │   └── main.py

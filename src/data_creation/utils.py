@@ -29,7 +29,7 @@ def recreate_data_folder(folder_path=PROCESSED_DATA_PATH):
             shutil.rmtree(folder_path, ignore_errors=True)
         os.makedirs(folder_path, exist_ok=True)
         open(os.path.join(folder_path, ".gitkeep"), "a").close()
-        print(f"[WARN] Recreated data folder with .gitkeep: {folder_path}")
+        print(f"[WARN] Recreated data folder: {folder_path}")
     except Exception as e:
         print(f"[ERROR] Failed to recreate folder {folder_path}: {e}")
 

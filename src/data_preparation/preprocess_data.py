@@ -15,7 +15,7 @@ def generate_dataset_vectors():
     start_time = time.time()
 
     df = pd.read_csv(utils.DATA_CSV)
-    X = df['label'].values
+    X = df['label'].values.reshape(-1, 1)
     y = []
 
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
