@@ -19,6 +19,11 @@ src/
 │   ├── data_preparation/
 │   │   ├── data_analysis.py
 │   │   └── preprocess_data.py
+│   ├── data_preparation/
+│   │   ├── architectures/
+│   │   │   ├── architectures/
+│   │   │   │   ├── cnn_models
+│   │   │   │   └── vgg19_model
 │   ├── flush_data.py
 │   └── main.py
 README.md
