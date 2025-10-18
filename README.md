@@ -23,7 +23,7 @@ src/
 │   │   ├── architectures/
 │   │   │   ├── architectures/
 │   │   │   │   ├── cnn_models
-│   │   │   │   └── vgg19_model
+│   │   │   │   │   └── vgg19_model.py
 │   ├── flush_data.py
 │   └── main.py
 README.md

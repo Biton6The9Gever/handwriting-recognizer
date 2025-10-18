@@ -10,7 +10,7 @@ from collections import Counter
 CHAR_AMOUNT = 26
 IMAGES_AMOUNT = 300
 IMAGE_SIZE = (64, 64)
-AUGMENTATIONS_AMOUNT = 4
+AUGMENTATIONS_AMOUNT = 4 
 
 # ==== PATH SETUP ====
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
