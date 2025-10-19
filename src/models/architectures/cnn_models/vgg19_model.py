@@ -37,7 +37,7 @@ def build_model(X, y):
     x = GlobalAveragePooling2D()(x)
     x = Dense(256, activation='relu')(x)
     x = Dropout(0.5)(x)
-    output = Dense(CHAR_AMOUNT, activation='softmax')(x)  # dynamically use CHAR_AMOUNT
+    output = Dense(CHAR_AMOUNT, activation='softmax')(x) 
 
     model = Model(inputs=base_model.input, outputs=output)
 
@@ -50,7 +50,7 @@ def build_model(X, y):
 
     # train first stage (frozen base)
     print("[INFO] Training head layers...")
-    history = model.fit(
+    model.fit(
         X_train, y_train,
         validation_data=(X_test, y_test),
         epochs=5,
@@ -65,7 +65,7 @@ def build_model(X, y):
     # unfreeze top layers
     print("[INFO] Fine-tuning top layers...")
     base_model.trainable = True
-    for layer in base_model.layers[:-5]:  # keep most layers frozen
+    for layer in base_model.layers[:-5]:  
         layer.trainable = False
 
     model.compile(
@@ -75,7 +75,7 @@ def build_model(X, y):
     )
 
     # fine-tune
-    history_ft = model.fit(
+    model.fit(
         X_train, y_train,
         validation_data=(X_test, y_test),
         epochs=5,
