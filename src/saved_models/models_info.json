@@ -1,0 +1,8 @@
+[
+    {
+        "name": "VGG19_letters",
+        "path": "VGG19_letters_20251020_015739.keras",
+        "accuracy": 0.9938461780548096,
+        "timestamp": "20251020_015739"
+    }
+]

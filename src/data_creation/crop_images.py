@@ -2,7 +2,7 @@ import cv2
 import os
 import shutil
 from tqdm import tqdm
-from data_creation import utils
+import utils
 
 # === GLOBAL CONFIG ===
 IMAGE_ROOT = utils.RAW_DATA_PATH

@@ -1,7 +1,7 @@
-from data_creation.utils import create_dataset
+from utils import create_dataset
 from data_preparation.preprocess_data import generate_dataset_vectors
 from models.architectures.cnn_models.vgg19_model import build_model
-import numpy as np
+
 # create the dataset
 create_dataset()
 

@@ -14,8 +14,7 @@ data/
 src/
 │   ├── data_creation/
 │   │   ├── augment_images.py
-│   │   ├── crop_images.py
-│   │   └── utils.py
+│   │   └── crop_images.py
 │   ├── data_preparation/
 │   │   ├── data_analysis.py
 │   │   └── preprocess_data.py
@@ -24,8 +23,12 @@ src/
 │   │   │   ├── architectures/
 │   │   │   │   ├── cnn_models
 │   │   │   │   │   └── vgg19_model.py
+│   ├── saved_models/
+│   │   ├── models_info_.json
+│   │   └── {model_name}_{data}.keras
 │   ├── flush_data.py
-│   └── main.py
+│   ├── main.py
+│   └── utils.py
 README.md
 ```
 

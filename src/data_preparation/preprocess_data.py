@@ -1,13 +1,10 @@
-import sys
 import os
 import cv2
 import time
-from tqdm import tqdm
-data_creation_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data_creation'))
-sys.path.append(data_creation_path)
-import utils 
-import pandas as pd
+import utils
 import numpy as np
+import pandas as pd
+from tqdm import tqdm
 
 def generate_dataset_vectors():
     print('[START] Generating dataset vectors')

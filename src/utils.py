@@ -1,9 +1,11 @@
 import os
 import cv2
+import json
 import shutil
 import itertools
 import pandas as pd
 from tqdm import tqdm
+from datetime import datetime
 from collections import Counter
 
 # ==== CONSTANTS ====
@@ -13,7 +15,7 @@ IMAGE_SIZE = (64, 64)
 AUGMENTATIONS_AMOUNT = 4 
 
 # ==== PATH SETUP ====
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 RAW_DATA_PATH = os.path.join(DATA_DIR, "raw")
 PROCESSED_DATA_PATH = os.path.join(DATA_DIR, "processed")
@@ -131,4 +133,44 @@ def create_dataset():
     create_csv_file()
 
     print("\n[END] Dataset creation complete \n")
+    
+def save_model_with_metadata(model, accuracy, model_name="vgg19"):
+    # Create models directory if it doesn't exist
+    models_dir = os.path.join(os.path.dirname(__file__), "saved_models")
+    os.makedirs(models_dir, exist_ok=True)
+
+    # Timestamp for uniqueness
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    # Use modern Keras format
+    model_filename = f"{model_name}_{timestamp}.keras"
+    model_path = os.path.join(models_dir, model_filename)
+
+    # Save the model in the new Keras format
+    model.save(model_path)
+
+    # Metadata file
+    meta_path = os.path.join(models_dir, "models_info.json")
+
+    # Load existing metadata if available
+    if os.path.exists(meta_path):
+        with open(meta_path, "r") as f:
+            models_info = json.load(f)
+    else:
+        models_info = []
+
+    # Add new model entry
+    models_info.append({
+        "name": model_name,
+        "path": model_filename,
+        "accuracy": float(accuracy),
+        "timestamp": timestamp
+    })
+
+    # Save metadata to JSON
+    with open(meta_path, "w") as f:
+        json.dump(models_info, f, indent=4)
+
+    print(f"[SAVED] Model saved at: {model_path}")
+    print(f"[INFO] Metadata updated at: {meta_path}")
     
