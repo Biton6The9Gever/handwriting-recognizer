@@ -14,7 +14,7 @@ from utils import save_model_with_metadata
 # Local imports
 data_creation_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data_creation'))
 sys.path.append(data_creation_path)
-from utils import CHAR_AMOUNT, AUGMENTATIONS_AMOUNT, IMAGES_AMOUNT
+from utils import CHAR_AMOUNT
 
 
 def build_model(X, y):

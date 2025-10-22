@@ -7,6 +7,7 @@ import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
 from collections import Counter
+import tensorflow.keras as keras  # type: ignore
 
 # ==== CONSTANTS ====
 CHAR_AMOUNT = 26
@@ -20,6 +21,7 @@ DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 RAW_DATA_PATH = os.path.join(DATA_DIR, "raw")
 PROCESSED_DATA_PATH = os.path.join(DATA_DIR, "processed")
 DATA_CSV = os.path.join(DATA_DIR, "dataset.csv")
+MODEL_DIR = os.path.join(PROJECT_ROOT,"src", "saved_models")
 
 
 
@@ -173,4 +175,10 @@ def save_model_with_metadata(model, accuracy, model_name="vgg19"):
 
     print(f"[SAVED] Model saved at: {model_path}")
     print(f"[INFO] Metadata updated at: {meta_path}")
+    
+def load_model(file_path):
+    # Load the model
+    model = keras.models.load_model(os.path.join(MODEL_DIR, file_path))
+    return model
+    
     

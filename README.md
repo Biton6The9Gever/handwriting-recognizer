@@ -4,31 +4,31 @@ A machine learning model to recognize and classify my handwriting
 ## Folder structure
 ```text
 data/
-│   ├── raw/
-│   │   ├── raw_a.jpg
-│   │   ├── raw_b.jpg
-│   │   ├── ...
-│   │   └── raw_z.jpg
-│   ├── processed/              # hold the data after processing
-│   └── dataset.csv    
+├── raw/                        # original, unprocessed data
+│   ├── raw_a.jpg
+│   ├── raw_b.jpg
+│   ├── ...
+│   └── raw_z.jpg
+├── processed/                  # data after preprocessing or augmentation
+│   └── ...
+└── dataset.csv
 src/
-│   ├── data_creation/
-│   │   ├── augment_images.py
-│   │   └── crop_images.py
-│   ├── data_preparation/
-│   │   ├── data_analysis.py
-│   │   └── preprocess_data.py
-│   ├── data_preparation/
-│   │   ├── architectures/
-│   │   │   ├── architectures/
-│   │   │   │   ├── cnn_models
-│   │   │   │   │   └── vgg19_model.py
-│   ├── saved_models/
-│   │   ├── models_info_.json
-│   │   └── {model_name}_{data}.keras
-│   ├── flush_data.py
-│   ├── main.py
-│   └── utils.py
+├── data_creation/
+│   ├── augment_images.py
+│   └── crop_images.py
+├── data_preparation/
+│   ├── data_analysis.py
+│   └── preprocess_data.py
+├── models/
+│   └── architectures/
+│       └── cnn_models/
+│           └── vgg19_model.py
+├── saved_models/
+│   ├── models_info_.json
+│   └── {model_name}_{data}.keras
+├── flush_data.py
+├── main.py
+└── utils.py
 README.md
 ```
 
