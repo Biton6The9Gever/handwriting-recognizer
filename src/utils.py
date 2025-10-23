@@ -180,5 +180,26 @@ def load_model(file_path):
     # Load the model
     model = keras.models.load_model(os.path.join(MODEL_DIR, file_path))
     return model
+
+def load_highest_accuracy_model():
+    meta_path = os.path.join(MODEL_DIR, "models_info.json")
+
+    if not os.path.exists(meta_path):
+        raise FileNotFoundError(f"No metadata file found at {meta_path}")
+
+    with open(meta_path, "r") as f:
+        models_info = json.load(f)
+
+    if not models_info:
+        raise ValueError("No models found in metadata.")
+
+    # Find the model with the highest accuracy
+    best_model_info = max(models_info, key=lambda x: x["accuracy"])
+    best_model_path = best_model_info["path"]
+
+    # Load and return the best model
+    model = load_model(best_model_path)
+    print(f"[LOADED] Loaded model '{best_model_info['name']}' with accuracy {best_model_info['accuracy']:.4f}")
+    return model
     
     
