@@ -1,15 +1,15 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D  # type: ignore
 from tensorflow.keras.utils import to_categorical                           # type: ignore
-from tensorflow.keras.applications import VGG19                             # type: ignore
+from tensorflow.keras.applications import MobileNetV2                       # type: ignore
 from tensorflow.keras.optimizers import Adam                                # type: ignore
 from tensorflow.keras.models import Model                                   # type: ignore
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from utils import save_model ,CHAR_AMOUNT
+from utils import save_model, CHAR_AMOUNT
 
 
-def build_model_vgg19(X, y):
+def build_model_mobilenetv2(X, y):
     # encode labels
     le = LabelEncoder()
     y_labels = le.fit_transform(X.ravel())
@@ -20,8 +20,8 @@ def build_model_vgg19(X, y):
         y, y_labels, test_size=0.2, random_state=67, stratify=y_labels
     )
 
-    # base model (VGG19)
-    base_model = VGG19(weights='imagenet', include_top=False, input_shape=(64, 64, 3))
+    # base model (MobileNetV2)
+    base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(64, 64, 3))
     base_model.trainable = False  # freeze convolutional base
 
     # add classification head
@@ -29,7 +29,7 @@ def build_model_vgg19(X, y):
     x = GlobalAveragePooling2D()(x)
     x = Dense(256, activation='relu')(x)
     x = Dropout(0.5)(x)
-    output = Dense(CHAR_AMOUNT, activation='softmax')(x) 
+    output = Dense(CHAR_AMOUNT, activation='softmax')(x)
 
     model = Model(inputs=base_model.input, outputs=output)
 
@@ -41,7 +41,7 @@ def build_model_vgg19(X, y):
     )
 
     # train first stage (frozen base)
-    print("[INFO] Training head layers...")
+    print("[INFO] Training head layers (MobileNetV2)...")
     model.fit(
         X_train, y_train,
         validation_data=(X_test, y_test),
@@ -57,7 +57,7 @@ def build_model_vgg19(X, y):
     # unfreeze top layers
     print("[INFO] Fine-tuning top layers...")
     base_model.trainable = True
-    for layer in base_model.layers[:-5]:  
+    for layer in base_model.layers[:-20]:  # unfreeze last 20 layers
         layer.trainable = False
 
     model.compile(
@@ -75,9 +75,12 @@ def build_model_vgg19(X, y):
         verbose=1
     )
 
-    #evaluation
+    # final evaluation
     final_loss, final_acc = model.evaluate(X_test, y_test, verbose=0)
     print(f"[RESULT] Final Accuracy: {final_acc:.4f}, Loss: {final_loss:.4f}")
-    save_model(model, final_acc, model_name="VGG19_letters")
 
-    # return model, le
+    # save model with metadata
+    save_model(model, final_acc, model_name="MobileNetV2_letters")
+
+    # return model and label encoder
+    return model, le

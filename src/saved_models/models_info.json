@@ -4,5 +4,11 @@
         "path": "VGG19_letters_20251020_015739.keras",
         "accuracy": 0.9938461780548096,
         "timestamp": "20251020_015739"
+    },
+    {
+        "name": "MobileNetV2_letters",
+        "path": "MobileNetV2_letters_20251023_123832.keras",
+        "accuracy": 0.9630769491195679,
+        "timestamp": "20251023_123832"
     }
 ]

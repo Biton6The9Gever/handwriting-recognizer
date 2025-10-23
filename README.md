@@ -22,10 +22,12 @@ src/
 ├── models/
 │   └── architectures/
 │       └── cnn_models/
-│           └── vgg19_model.py
+│           ├── vgg19_model.py
+│           └── mobilenetv2_model.py
 ├── saved_models/
 │   ├── models_info_.json
-│   └── {model_name}_{data}.keras
+│   ├── {model_name}_{date}.keras
+│   └── ...
 ├── flush_data.py
 ├── main.py
 └── utils.py

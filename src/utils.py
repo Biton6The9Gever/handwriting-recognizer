@@ -136,7 +136,7 @@ def create_dataset():
 
     print("\n[END] Dataset creation complete \n")
     
-def save_model_with_metadata(model, accuracy, model_name="vgg19"):
+def save_model(model, accuracy, model_name="vgg19"):
     # Create models directory if it doesn't exist
     models_dir = os.path.join(os.path.dirname(__file__), "saved_models")
     os.makedirs(models_dir, exist_ok=True)
