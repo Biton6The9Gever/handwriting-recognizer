@@ -3,6 +3,7 @@ import cv2
 import json
 import shutil
 import itertools
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
@@ -201,5 +202,22 @@ def load_highest_accuracy_model():
     model = load_model(best_model_path)
     print(f"[LOADED] Loaded model '{best_model_info['name']}' with accuracy {best_model_info['accuracy']:.4f}")
     return model
+
+def save_data_vectors(X, y, file_name='dataset_vectors.npz'):
+    os.makedirs(DATA_DIR, exist_ok=True)
+    file_path = os.path.join(DATA_DIR, file_name)
+    np.savez_compressed(file_path, X=np.asarray(X), y=np.asarray(y))
+    print(f"[SAVED] Data vectors saved at: {file_path}")
+    return file_path
+
+def load_data_vectors(file_name='dataset_vectors.npz'):
+    file_path = os.path.join(DATA_DIR, file_name)
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"[WARN] No data vectors file found at {file_path}")
+    data = np.load(file_path)
+    X = data['X']
+    y = data['y']
+    print(f"[LOADED] Data vectors loaded from: {file_path}")
+    return X, y
     
     

@@ -5,3 +5,4 @@ __pycache__/
 *.pyo
 venv/
 *.keras
+data/dataset_vectors.npz

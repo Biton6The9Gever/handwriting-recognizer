@@ -37,7 +37,7 @@ def generate_dataset_vectors():
     elapsed = time.time() - start_time
     print(f"\n[END] Finished data vectors {len(y)} images in {elapsed:.2f} seconds. \n")
 
-    return X, y
+    utils.save_data_vectors(X, y)
 
 
 

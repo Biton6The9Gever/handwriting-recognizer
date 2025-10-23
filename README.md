@@ -11,6 +11,7 @@ data/
 │   └── raw_z.jpg
 ├── processed/                  # data after preprocessing or augmentation
 │   └── ...
+├── dataset_vectors.npz         # hold the dataset vectors after processing 
 └── dataset.csv
 src/
 ├── data_creation/
