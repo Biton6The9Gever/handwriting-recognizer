@@ -80,4 +80,4 @@ def build_model_vgg19(X, y):
     print(f"[RESULT] Final Accuracy: {final_acc:.4f}, Loss: {final_loss:.4f}")
     save_model(model, final_acc, model_name="VGG19_letters")
 
-    # return model, le
+    return model, le

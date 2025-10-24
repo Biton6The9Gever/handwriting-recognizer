@@ -21,10 +21,10 @@ src/
 │   ├── data_analysis.py
 │   └── preprocess_data.py
 ├── models/
-│   └── architectures/
-│       └── cnn_models/
-│           ├── vgg19_model.py
-│           └── mobilenetv2_model.py
+│   ├── cnn_models/
+│   │   ├── vgg19_model.py
+│   │   └── mobilenetv2_model.py
+│   └── rnn_model.py
 ├── saved_models/
 │   ├── models_info_.json
 │   ├── {model_name}_{date}.keras

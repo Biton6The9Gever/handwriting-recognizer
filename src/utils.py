@@ -214,7 +214,7 @@ def load_data_vectors(file_name='dataset_vectors.npz'):
     file_path = os.path.join(DATA_DIR, file_name)
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"[WARN] No data vectors file found at {file_path}")
-    data = np.load(file_path)
+    data = np.load(file_path, allow_pickle=True)
     X = data['X']
     y = data['y']
     print(f"[LOADED] Data vectors loaded from: {file_path}")

@@ -10,5 +10,11 @@
         "path": "MobileNetV2_letters_20251023_123832.keras",
         "accuracy": 0.9630769491195679,
         "timestamp": "20251023_123832"
+    },
+    {
+        "name": "RNN_letters",
+        "path": "RNN_letters_20251025_024346.keras",
+        "accuracy": 0.03846153989434242,
+        "timestamp": "20251025_024346"
     }
 ]

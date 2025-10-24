@@ -1,15 +1,13 @@
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-from utils import create_dataset ,load_highest_accuracy_model,load_data_vectors
+from utils import load_highest_accuracy_model,load_data_vectors
+from models.rnn_model import build_model_rnn
 
-
-# create the dataset
-create_dataset()
 
 # load the X, y vectors for training
 X,y = load_data_vectors()
-
-load_highest_accuracy_model()
+build_model_rnn(X, y)
+#load_highest_accuracy_model()
 
 
 
