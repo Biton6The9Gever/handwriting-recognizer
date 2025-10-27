@@ -219,5 +219,24 @@ def load_data_vectors(file_name='dataset_vectors.npz'):
     y = data['y']
     print(f"[LOADED] Data vectors loaded from: {file_path}")
     return X, y
+
+def predict_image(model, image_path):
+    image = cv2.imread(image_path)
+    if image is None:
+        raise FileNotFoundError(f"[WARN] Image not found at {image_path}")
+
+    # Convert BGR to RGB
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # Resize same as training
+    image = cv2.resize(image, (64, 64))
+    # Normalize to [0, 1]
+    image = image / 255.0
+    # Add batch dimension
+    image_array = np.expand_dims(image, axis=0)
+    predictions = model.predict(image_array)
+    predicted_class = np.argmax(predictions, axis=1)[0]
+    confidence = np.max(predictions)
+    predicted_letter = chr(ord('A') + predicted_class)
+    return predicted_letter, confidence
     
     

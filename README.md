@@ -9,6 +9,8 @@ data/
 │   ├── raw_b.jpg
 │   ├── ...
 │   └── raw_z.jpg
+├── samples/                    # random sample to test
+│   └── ...                     
 ├── processed/                  # data after preprocessing or augmentation
 │   └── ...
 ├── dataset_vectors.npz         # hold the dataset vectors after processing 
@@ -40,4 +42,6 @@ README.md
 - working with the cv2 library
 - data augmentation
 - machine learning pipelines
+- transfer learning
+- project management
 - and more!
