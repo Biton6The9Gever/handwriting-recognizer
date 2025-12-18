@@ -4,6 +4,9 @@ import shutil
 from tqdm import tqdm
 import utils
 
+##############################################################################
+# TODO: make a function that augment the images like from a black letter into some other colors
+##############################################################################
 # === GLOBAL CONFIG ===
 IMAGE_ROOT = utils.RAW_DATA_PATH
 BOX_SIZE = 65  # px for 2x2 box
