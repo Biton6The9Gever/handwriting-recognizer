@@ -57,14 +57,14 @@ def paste_letter(canvas, letter, x, y):
 
 def generate_sentence(sentence, idx):
     canvas_h = 64 
-    canvas_w = 1600
+    canvas_w = 1600 # TODO: Change the width to be dynamic based on sentence length
     canvas = np.ones((canvas_h, canvas_w), dtype=np.uint8) * 255
 
     x_cursor = 10
 
     for char in sentence:
         if char == " ":
-            x_cursor += random.randint(20, 35)
+            x_cursor += random.randint(10, 20)
             continue
 
         letter = load_letter(char)
@@ -86,7 +86,7 @@ def generate_sentence(sentence, idx):
         paste_letter(canvas, letter, x_cursor, y)
         x_cursor += w + random.randint(5, 12)
 
-    img_name = f"sentence_{idx:05d}.png"
+    img_name = f"sentence_{idx:05d}.jpg"
     cv2.imwrite(os.path.join(OUT_IMG, img_name), canvas)
 
     with open(os.path.join(OUT_LBL, f"sentence_{idx:05d}.json"), "w") as f:
@@ -102,3 +102,5 @@ sentences = [
 
 for i, s in enumerate(sentences):
     generate_sentence(s, i)
+    
+print(VALID_FILES)

@@ -17,13 +17,28 @@ IMAGE_SIZE = (64, 64)
 AUGMENTATIONS_AMOUNT = 4 
 
 # ==== PATH SETUP ====
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# ==== PATH SETUP ====
+# Project root (repo root)
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..")
+)
+
+# Data directories
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 RAW_DATA_PATH = os.path.join(DATA_DIR, "raw")
 PROCESSED_DATA_PATH = os.path.join(DATA_DIR, "processed")
-DATA_CSV = os.path.join(DATA_DIR, "dataset.csv")
-MODEL_DIR = os.path.join(PROJECT_ROOT,"src", "saved_models")
 
+# Sentence dataset (NEW)
+SENTENCES_DIR = os.path.join(DATA_DIR, "sentences")
+SENTENCE_IMAGES_DIR = os.path.join(SENTENCES_DIR, "images")
+SENTENCE_LABELS_DIR = os.path.join(SENTENCES_DIR, "labels")
+
+# CSV / metadata
+DATA_CSV = os.path.join(DATA_DIR, "dataset.csv")
+SENTENCE_CSV = os.path.join(DATA_DIR, "sentences.csv")
+
+# Models
+MODEL_DIR = os.path.join(PROJECT_ROOT, "src", "saved_models")
 
 
 # ==== FUNCTIONS ====
