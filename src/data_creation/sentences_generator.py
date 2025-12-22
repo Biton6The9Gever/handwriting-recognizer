@@ -84,19 +84,21 @@ def estimate_sentence_width(sentence, canvas_h, valid_files):
 
 
 def generate_sentences(path):
+    # wipe old data
+    utils.recreate_data_folder(utils.SENTENCES_DIR)
+
+    if os.path.exists(utils.SENTENCE_CSV):
+        os.remove(utils.SENTENCE_CSV)
+
     sentences = load_sentences(path)
-    os.makedirs(utils.SENTENCES_DIR, exist_ok=True)
-
-    if not os.path.exists(utils.SENTENCE_CSV):
-        with open(utils.SENTENCE_CSV, "w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow(["image", "text"])
-
-    start_idx = len(load_existing_sentences(utils.SENTENCE_CSV))
     valid_files = load_valid_files()
-    idx = start_idx
 
-    with open(utils.SENTENCE_CSV, "a", newline="", encoding="utf-8") as f:
+    # init CSV
+    with open(utils.SENTENCE_CSV, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
+        writer.writerow(["image", "text"])
+
+        idx = 1  # start from 1
 
         for sentence in sentences:
             canvas_h = 64
