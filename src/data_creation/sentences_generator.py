@@ -9,7 +9,20 @@ import utils
 # regex to match filenames like A_123.jpg
 FILENAME_RE = re.compile(r"^([A-Za-z])_(\d+)\.(jpg)$")
 
-
+def load_sentences(path):
+    with open(path, encoding="utf-8") as f:
+        return [
+            line.strip()
+            for line in f
+            if line.strip()
+        ]
+        
+def load_existing_sentences(csv_path=utils.SENTENCE_CSV):
+    if not os.path.exists(csv_path):
+        return []
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+    
 def load_valid_files():
     valid_files = []
 
@@ -70,59 +83,49 @@ def estimate_sentence_width(sentence, canvas_h, valid_files):
     return width + 20
 
 
-def generate_sentences(sentences):
-    """
-    Generate sentence images and append labels to CSV.
-
-    Args:
-        sentences (list[str]): sentences to generate
-    """
-    start_idx=0
+def generate_sentences(path):
+    sentences = load_sentences(path)
     os.makedirs(utils.SENTENCES_DIR, exist_ok=True)
 
-    # init CSV once
     if not os.path.exists(utils.SENTENCE_CSV):
         with open(utils.SENTENCE_CSV, "w", newline="", encoding="utf-8") as f:
             csv.writer(f).writerow(["image", "text"])
 
+    start_idx = len(load_existing_sentences(utils.SENTENCE_CSV))
     valid_files = load_valid_files()
-
     idx = start_idx
 
-    for sentence in sentences:
-        canvas_h = 64
-        canvas_w = estimate_sentence_width(sentence, canvas_h, valid_files)
-        canvas = np.ones((canvas_h, canvas_w), dtype=np.uint8) * 255
+    with open(utils.SENTENCE_CSV, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
 
-        x_cursor = 10
+        for sentence in sentences:
+            canvas_h = 64
+            canvas_w = estimate_sentence_width(sentence, canvas_h, valid_files)
+            canvas = np.ones((canvas_h, canvas_w), dtype=np.uint8) * 255
 
-        for char in sentence:
-            if char == " ":
-                x_cursor += random.randint(10, 20)
-                continue
+            x_cursor = 10
 
-            letter = load_letter(char, valid_files)
-            if letter is None:
-                continue
+            for char in sentence:
+                if char == " ":
+                    x_cursor += random.randint(10, 20)
+                    continue
 
-            h, w = letter.shape
-            if h > canvas_h:
-                scale = canvas_h / h
-                letter = cv2.resize(
-                    letter, (int(w * scale), canvas_h)
-                )
+                letter = load_letter(char, valid_files)
+                if letter is None:
+                    continue
+
                 h, w = letter.shape
+                if h > canvas_h:
+                    scale = canvas_h / h
+                    letter = cv2.resize(letter, (int(w * scale), canvas_h))
+                    h, w = letter.shape
 
-            y = (canvas_h - h) // 2
-            paste_letter(canvas, letter, x_cursor, y)
-            x_cursor += w + random.randint(5, 12)
+                y = (canvas_h - h) // 2
+                paste_letter(canvas, letter, x_cursor, y)
+                x_cursor += w + random.randint(5, 12)
 
-        img_name = f"sentence_{idx:05d}.jpg"
-        cv2.imwrite(
-            os.path.join(utils.SENTENCES_DIR, img_name), canvas
-        )
-        print(f"Generated sentence image: {img_name}")
-        with open(utils.SENTENCE_CSV, "w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow([img_name, sentence])
+            img_name = f"sentence_{idx:05d}.jpg"
+            cv2.imwrite(os.path.join(utils.SENTENCES_DIR, img_name), canvas)
+            writer.writerow([img_name, sentence])
 
-        idx += 1
+            idx += 1

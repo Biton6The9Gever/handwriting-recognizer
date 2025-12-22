@@ -8,13 +8,9 @@ recreate_data_folder()
 create_dataset()
 
 input()
-sentences = [
-    "HELLO WORLD",
-    "MACHINE LEARNING",
-    "THIS IS MY HANDWRITING"
-]
 
-generate_sentences(sentences)
+
+generate_sentences('D:\\Biton\\VisualStudio\\.VSC\\Python\\ML_Project\\data\\sentences.txt')
 
 
 
