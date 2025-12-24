@@ -8,6 +8,7 @@ import utils
 
 # regex to match filenames like A_123.jpg
 FILENAME_RE = re.compile(r"^([A-Za-z])_(\d+)\.(jpg)$")
+LETTER_SPACING=-20
 
 def load_sentences(path):
     with open(path, encoding="utf-8") as f:
@@ -54,12 +55,29 @@ def load_letter(char, valid_files):
 
 
 def paste_letter(canvas, letter, x, y):
+    canvas_h, canvas_w = canvas.shape
     h, w = letter.shape
-    roi = canvas[y:y+h, x:x+w]
 
-    mask = letter < 245
-    roi[mask] = letter[mask]
-    canvas[y:y+h, x:x+w] = roi
+    # Compute valid paste region
+    x1 = max(x, 0)
+    y1 = max(y, 0)
+    x2 = min(x + w, canvas_w)
+    y2 = min(y + h, canvas_h)
+
+    if x1 >= x2 or y1 >= y2:
+        return  # nothing to paste
+
+    # Corresponding region in letter
+    lx1 = x1 - x
+    ly1 = y1 - y
+    lx2 = lx1 + (x2 - x1)
+    ly2 = ly1 + (y2 - y1)
+
+    roi = canvas[y1:y2, x1:x2]
+    letter_crop = letter[ly1:ly2, lx1:lx2]
+
+    mask = letter_crop < 245
+    roi[mask] = letter_crop[mask]
 
 
 def estimate_sentence_width(sentence, canvas_h, valid_files):
@@ -78,7 +96,7 @@ def estimate_sentence_width(sentence, canvas_h, valid_files):
         if h > canvas_h:
             w = int(w * (canvas_h / h))
 
-        width += w + random.randint(5, 12)
+        width += w + LETTER_SPACING
 
     return width + 20
 
@@ -98,18 +116,18 @@ def generate_sentences(path):
         writer = csv.writer(f)
         writer.writerow(["image", "text"])
 
-        idx = 1  # start from 1
+        idx = 1  
 
         for sentence in sentences:
             canvas_h = 64
-            canvas_w = estimate_sentence_width(sentence, canvas_h, valid_files)
+            canvas_w = estimate_sentence_width(sentence, canvas_h, valid_files)+20
             canvas = np.ones((canvas_h, canvas_w), dtype=np.uint8) * 255
 
             x_cursor = 10
 
             for char in sentence:
                 if char == " ":
-                    x_cursor += random.randint(10, 20)
+                    x_cursor += random.randint(20, 35)
                     continue
 
                 letter = load_letter(char, valid_files)
@@ -124,7 +142,7 @@ def generate_sentences(path):
 
                 y = (canvas_h - h) // 2
                 paste_letter(canvas, letter, x_cursor, y)
-                x_cursor += w + random.randint(5, 12)
+                x_cursor += w + LETTER_SPACING
 
             img_name = f"sentence_{idx:05d}.jpg"
             cv2.imwrite(os.path.join(utils.SENTENCES_DIR, img_name), canvas)

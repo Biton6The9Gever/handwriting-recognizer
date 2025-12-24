@@ -8,6 +8,7 @@ from data_creation.sentences_generator import generate_sentences
 create_dataset()
 
 generate_sentences('D:\\Biton\\VisualStudio\\.VSC\\Python\\ML_Project\\data\\sentences.txt')
+recreate_data_folder('D:\\Biton\\VisualStudio\\.VSC\\Python\\ML_Project\\data\\sentences')
 recreate_data_folder()
 
 
