@@ -1,9 +1,12 @@
 import os
+from xml.parsers.expat import model
 import cv2
 import json
 import shutil
+import tempfile
 import itertools
 import numpy as np
+import gradio as gr
 import pandas as pd
 from tqdm import tqdm
 from datetime import datetime
@@ -235,6 +238,18 @@ def load_data_vectors(file_name='dataset_vectors.npz'):
     print(f"[LOADED] Data vectors loaded from: {file_path}")
     return X, y
 
+def preprocess(img_array):
+    if len(img_array.shape) == 2: # if black n white
+        img_array = cv2.cvtColor(img_array, cv2.COLOR_GRAY2RGB)
+    elif img_array.shape[2] == 4: # if RGBA (as gradio sometimes sends 4 channels)
+        img_array = cv2.cvtColor(img_array, cv2.COLOR_RGBA2RGB)
+    
+    # resize and normalize    
+    img_array = cv2.resize(img_array, (64, 64))
+    img_array = img_array.astype(np.float32) / 255.0
+    return np.expand_dims(img_array, axis=0)
+    
+
 def predict_image(model, image_path):
     image = cv2.imread(image_path)
     if image is None:
@@ -255,3 +270,68 @@ def predict_image(model, image_path):
     return predicted_letter, confidence
     
     
+def gradio_ui():
+
+    MODEL_PATHS = {
+        "VGG19": "VGG19_letters_20251020_015739.keras",
+        "MobileNetV2": "MobileNetV2_letters_20251023_123832.keras",
+    }
+
+    # cache for lazy loading
+    loaded_models = {}
+
+    def get_model(model_name):
+        if model_name not in loaded_models:
+            print(f"[INFO] Loading {model_name}...")
+            loaded_models[model_name] = load_model(MODEL_PATHS[model_name])
+        return loaded_models[model_name]
+
+    def predict_from_canvas(img, model_name):
+        if img is None:
+            return "No input"
+
+        # load selected model
+        model = get_model(model_name)
+
+        # extract drawing from Gradio dict
+        img_array = img["composite"].astype(np.uint8)
+
+        raw_img = img["composite"].astype(np.uint8)
+        raw_img = 255 - raw_img
+        
+        raw_img = cv2.resize(raw_img, (64, 64), interpolation=cv2.INTER_AREA)
+        
+        # Process and Predict
+        processed_data = preprocess(raw_img)
+        predictions = model.predict(processed_data)
+    
+        predicted_class = np.argmax(predictions, axis=1)[0]
+        confidence = np.max(predictions)
+    
+        return f"{chr(ord('A') + predicted_class)} ({confidence:.2f})"
+
+    interface = gr.Interface(
+        fn=predict_from_canvas,
+        inputs=[
+            gr.Sketchpad(
+                type="numpy",
+                image_mode="L",
+                canvas_size=(280, 280),
+                brush=gr.Brush(
+                    colors=["#000000"],  # black brush so you can see drawing
+                    color_mode="fixed",
+                    default_size=12
+                )
+            ),
+            gr.Radio(
+                choices=list(MODEL_PATHS.keys()),
+                value="VGG19",
+                label="Model"
+            )
+        ],
+        outputs=gr.Textbox(label="Prediction"),
+        title="Handwriting Recognizer",
+        description="Draw a letter and choose a model"
+    )
+
+    interface.launch()
